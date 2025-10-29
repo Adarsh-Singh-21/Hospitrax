@@ -12,6 +12,7 @@ import NotificationBanner from './NotificationBanner';
 import ReportsDashboard from './ReportsDashboard';
 import PatientAnalytics from './PatientAnalytics';
 import HumanBodyAnalytics from './HumanBodyAnalytics';
+import AppointmentBooking from './AppointmentBooking';
 import { Plus, AlertTriangle } from 'lucide-react';
 import { Notification, NotificationPriority } from '../types/notifications';
 import NotificationService from '../services/NotificationService';
@@ -98,6 +99,16 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
                 </div>
               </div>
             )
+          ) : activeTab === 'appointments' ? (
+            <div className="p-6 space-y-6">
+              {role === 'patient' ? (
+                <AppointmentBooking />
+              ) : (
+                <div className="bg-dark-card rounded-lg p-6 border border-gray-700 text-gray-300">
+                  Doctors can view appointments in Reports for now.
+                </div>
+              )}
+            </div>
           ) : (
             <div className="p-6">
               {/* Action Buttons */}

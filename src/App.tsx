@@ -45,13 +45,6 @@ function App() {
   return (
     <div className="App">
       <Dashboard role={role} />
-      {/* Optional: Temporary logout control for testing */}
-      <button
-        onClick={handleLogout}
-        className="fixed bottom-4 right-4 px-3 py-2 text-sm bg-gray-800 text-white rounded"
-      >
-        Logout
-      </button>
     </div>
   );
 }

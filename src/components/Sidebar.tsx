@@ -10,7 +10,7 @@ import {
 import { Notification } from '../types/notifications';
 import NotificationService from '../services/NotificationService';
 import { auth } from '../firebase';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 interface SidebarProps {
   activeTab: string;
@@ -22,12 +22,14 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const notificationService = NotificationService.getInstance();
   const [userEmail, setUserEmail] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
   const mainItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
+    { id: 'appointments', label: 'Appointments', icon: FileText },
   ];
 
   useEffect(() => {
@@ -55,8 +57,18 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     <div className="w-64 bg-dark-sidebar h-full flex flex-col">
       {/* Logo */}
       <div className="p-6">
-        <div className="w-8 h-8 bg-white rounded flex items-center justify-center">
-          <span className="text-dark-bg font-bold text-xl">H</span>
+        <div className="flex items-center space-x-3">
+          <img
+            src="/hospitrax-logo.svg"
+            alt="HospiTrax logo"
+            className="w-8 h-8 rounded bg-white object-contain"
+            onError={(e) => {
+              (e.currentTarget as HTMLImageElement).style.display = 'none';
+            }}
+          />
+          <span className="text-white font-bold text-xl tracking-tight">
+            Hospi<span className="text-emerald-400">Trax</span>
+          </span>
         </div>
       </div>
 
@@ -97,8 +109,11 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
 
 
       {/* User Profile */}
-      <div className="mt-auto p-6">
-        <div className="flex items-center space-x-3 p-3 rounded-lg bg-dark-card">
+      <div className="mt-auto p-6 relative">
+        <button
+          onClick={() => setProfileMenuOpen(v => !v)}
+          className="w-full flex items-center space-x-3 p-3 rounded-lg bg-dark-card hover:bg-dark-hover transition"
+        >
           <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center">
             <User size={20} />
           </div>
@@ -107,7 +122,31 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             <p className="text-gray-400 text-xs truncate">{userEmail || 'Not signed in'}</p>
           </div>
           <ChevronDown size={16} className="text-gray-400" />
-        </div>
+        </button>
+        {profileMenuOpen && (
+          <>
+            <div className="fixed inset-0 z-40" onClick={() => setProfileMenuOpen(false)} />
+            <div className="absolute z-50 left-6 right-6 bottom-16">
+              <div className="bg-dark-card border border-gray-700 rounded-xl shadow-2xl overflow-hidden">
+                <div className="px-4 py-3">
+                  <p className="text-white text-sm font-medium truncate">{userName || 'Account'}</p>
+                  <p className="text-gray-400 text-xs truncate">{userEmail || '—'}</p>
+                </div>
+                <div className="h-px bg-gray-700" />
+                <button
+                  onClick={async () => {
+                    localStorage.removeItem('userRole');
+                    await signOut(auth);
+                    setProfileMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-3 text-red-300 hover:bg-dark-hover"
+                >
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );
