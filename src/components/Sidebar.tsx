@@ -9,6 +9,8 @@ import {
 } from 'lucide-react';
 import { Notification } from '../types/notifications';
 import NotificationService from '../services/NotificationService';
+import { auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 interface SidebarProps {
   activeTab: string;
@@ -18,6 +20,8 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const notificationService = NotificationService.getInstance();
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [userName, setUserName] = useState<string>('');
 
   const mainItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
@@ -33,6 +37,19 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
     return unsubscribe;
   }, [notificationService]);
 
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const email = user.email || '';
+        setUserEmail(email);
+        setUserName(user.displayName || (email ? email.split('@')[0] : 'User'));
+      } else {
+        setUserEmail('');
+        setUserName('');
+      }
+    });
+    return () => unsub();
+  }, []);
 
   return (
     <div className="w-64 bg-dark-sidebar h-full flex flex-col">
@@ -86,8 +103,8 @@ const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
             <User size={20} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-white text-sm font-medium truncate">Dr. Sarah Johnson</p>
-            <p className="text-gray-400 text-xs truncate">sarah.j@hospital.com</p>
+            <p className="text-white text-sm font-medium truncate">{userName || 'Guest'}</p>
+            <p className="text-gray-400 text-xs truncate">{userEmail || 'Not signed in'}</p>
           </div>
           <ChevronDown size={16} className="text-gray-400" />
         </div>
