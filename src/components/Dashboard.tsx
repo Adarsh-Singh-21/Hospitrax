@@ -80,7 +80,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
       <div className="w-px bg-gray-700"></div>
       
       <div className="flex-1 flex flex-col">
-        <Header currentSection={activeTab} />
+        <Header currentSection={activeTab} role={role} />
         
         <main className="flex-1 overflow-y-auto">
           {activeTab === 'notifications' ? (
