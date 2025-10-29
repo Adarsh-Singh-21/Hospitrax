@@ -15,22 +15,26 @@ import { onAuthStateChanged, signOut } from 'firebase/auth';
 interface SidebarProps {
   activeTab: string;
   setActiveTab: (tab: string) => void;
+  role?: 'patient' | 'doctor';
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
+const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, role }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const notificationService = NotificationService.getInstance();
   const [userEmail, setUserEmail] = useState<string>('');
   const [userName, setUserName] = useState<string>('');
   const [profileMenuOpen, setProfileMenuOpen] = useState(false);
 
-  const mainItems = [
+  const allItems = [
     { id: 'dashboard', label: 'Dashboard', icon: Home },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'reports', label: 'Reports', icon: FileText },
     { id: 'analytics', label: 'Analytics', icon: BarChart3 },
     { id: 'appointments', label: 'Appointments', icon: FileText },
   ];
+  const mainItems = role === 'doctor'
+    ? allItems.filter(i => !['analytics', 'appointments'].includes(i.id))
+    : allItems;
 
   useEffect(() => {
     const unsubscribe = notificationService.subscribe((newNotifications) => {

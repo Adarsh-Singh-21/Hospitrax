@@ -21,99 +21,28 @@ import {
   NotificationCategory, 
   DeliveryChannel
 } from '../types/notifications';
+import NotificationService from '../services/NotificationService';
 // import NotificationSettings from './NotificationSettings';
 
-const NotificationCenter: React.FC = () => {
+interface NotificationCenterProps {
+  canSend?: boolean;
+}
+
+const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notificationService = NotificationService.getInstance();
   const [showSettings, setShowSettings] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<NotificationCategory | 'all'>('all');
   const [selectedPriority, setSelectedPriority] = useState<NotificationPriority | 'all'>('all');
 
-  // Mock data - in real app, this would come from API
   useEffect(() => {
-    const mockNotifications: Notification[] = [
-      {
-        id: '1',
-        type: NotificationType.EMERGENCY_CODE_BLUE,
-        title: 'Code Blue Alert',
-        message: 'Emergency resuscitation required in ICU Room 3. All available staff please respond immediately.',
-        timestamp: new Date(Date.now() - 2 * 60 * 1000), // 2 minutes ago
-        isRead: false,
-        priority: NotificationPriority.CRITICAL,
-        category: NotificationCategory.EMERGENCY,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH, DeliveryChannel.SMS],
-        actionUrl: '/emergency/room-3'
-      },
-      {
-        id: '2',
-        type: NotificationType.RESOURCE_SHORTAGE,
-        title: 'ICU Bed Shortage',
-        message: 'Only 2 ICU beds remaining. Consider transferring stable patients to general wards.',
-        timestamp: new Date(Date.now() - 15 * 60 * 1000), // 15 minutes ago
-        isRead: false,
-        priority: NotificationPriority.HIGH,
-        category: NotificationCategory.RESOURCES,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH, DeliveryChannel.EMAIL]
-      },
-      {
-        id: '3',
-        type: NotificationType.APPOINTMENT_REMINDER,
-        title: 'Appointment Reminder',
-        message: 'Dr. Smith has a surgery scheduled in 30 minutes - Operating Room 2.',
-        timestamp: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
-        isRead: true,
-        priority: NotificationPriority.MEDIUM,
-        category: NotificationCategory.APPOINTMENTS,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH]
-      },
-      {
-        id: '4',
-        type: NotificationType.AI_RESOURCE_SURGE,
-        title: 'AI Prediction: Resource Surge Expected',
-        message: 'Based on historical data and current trends, expect 40% increase in emergency admissions in the next 4 hours.',
-        timestamp: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
-        isRead: false,
-        priority: NotificationPriority.HIGH,
-        category: NotificationCategory.AI_INSIGHTS,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.EMAIL]
-      },
-      {
-        id: '5',
-        type: NotificationType.STAFF_SHIFT_REMINDER,
-        title: 'Shift Change Reminder',
-        message: 'Night shift starts in 1 hour. Please ensure all handovers are completed.',
-        timestamp: new Date(Date.now() - 60 * 60 * 1000), // 1 hour ago
-        isRead: true,
-        priority: NotificationPriority.MEDIUM,
-        category: NotificationCategory.STAFF,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH]
-      },
-      {
-        id: '6',
-        type: NotificationType.PATIENT_MESSAGE,
-        title: 'Patient Message',
-        message: 'Patient John Doe in Room 205 has requested pain medication review.',
-        timestamp: new Date(Date.now() - 90 * 60 * 1000), // 1.5 hours ago
-        isRead: false,
-        priority: NotificationPriority.MEDIUM,
-        category: NotificationCategory.PATIENT_COMMUNICATION,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH]
-      },
-      {
-        id: '7',
-        type: NotificationType.BILLING,
-        title: 'Billing Alert',
-        message: 'Insurance authorization required for Patient ID 12345 before procedure can proceed.',
-        timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-        isRead: true,
-        priority: NotificationPriority.MEDIUM,
-        category: NotificationCategory.ADMINISTRATIVE,
-        deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.EMAIL]
-      }
-    ];
-    setNotifications(mockNotifications);
-  }, []);
+    const unsubscribe = notificationService.subscribe((newNotifications) => {
+      setNotifications(newNotifications);
+    });
+    setNotifications(notificationService.getNotifications());
+    return unsubscribe;
+  }, [notificationService]);
 
   const filteredNotifications = notifications.filter(notification => {
     if (searchTerm && !notification.title.toLowerCase().includes(searchTerm.toLowerCase()) && 
@@ -132,19 +61,34 @@ const NotificationCenter: React.FC = () => {
   const unreadCount = notifications.filter(n => !n.isRead).length;
 
   const markAsRead = (id: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === id 
-          ? { ...notification, isRead: true }
-          : notification
-      )
-    );
+    notificationService.markAsRead(id);
   };
 
   const markAllAsRead = () => {
-    setNotifications(prev => 
-      prev.map(notification => ({ ...notification, isRead: true }))
-    );
+    notificationService.markAllAsRead();
+  };
+
+  const [composeOpen, setComposeOpen] = useState(false);
+  const [compose, setCompose] = useState({
+    title: '',
+    message: '',
+    category: NotificationCategory.ADMINISTRATIVE as NotificationCategory,
+    priority: NotificationPriority.MEDIUM as NotificationPriority,
+  });
+
+  const sendNotification = async () => {
+    if (!compose.title || !compose.message) return;
+    await notificationService.createNotification({
+      type: NotificationType.ADMINISTRATIVE,
+      title: compose.title,
+      message: compose.message,
+      isRead: false,
+      priority: compose.priority,
+      category: compose.category,
+      deliveryChannels: [DeliveryChannel.IN_APP],
+    });
+    setCompose({ title: '', message: '', category: NotificationCategory.ADMINISTRATIVE, priority: NotificationPriority.MEDIUM });
+    setComposeOpen(false);
   };
 
   const getCategoryIcon = (category: NotificationCategory) => {
@@ -212,6 +156,14 @@ const NotificationCenter: React.FC = () => {
               <CheckCheck size={16} />
               <span>Mark All Read</span>
             </button>
+            {canSend && (
+              <button
+                onClick={() => setComposeOpen(true)}
+                className="flex items-center space-x-2 px-3 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors"
+              >
+                <span>New Notification</span>
+              </button>
+            )}
             <button
               onClick={() => setShowSettings(true)}
               className="p-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
@@ -335,6 +287,57 @@ const NotificationCenter: React.FC = () => {
             >
               Close
             </button>
+          </div>
+        </div>
+      )}
+
+      {canSend && composeOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-dark-card rounded-lg p-6 max-w-md w-full mx-4">
+            <h2 className="text-xl font-bold text-white mb-4">Send Notification</h2>
+            <div className="space-y-3">
+              <input
+                type="text"
+                value={compose.title}
+                onChange={(e) => setCompose({ ...compose, title: e.target.value })}
+                placeholder="Title"
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white"
+              />
+              <textarea
+                value={compose.message}
+                onChange={(e) => setCompose({ ...compose, message: e.target.value })}
+                placeholder="Message"
+                className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white h-28"
+              />
+              <div className="flex space-x-2">
+                <select
+                  value={compose.category}
+                  onChange={(e) => setCompose({ ...compose, category: e.target.value as NotificationCategory })}
+                  className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                >
+                  <option value={NotificationCategory.ADMINISTRATIVE}>Administrative</option>
+                  <option value={NotificationCategory.RESOURCES}>Resources</option>
+                  <option value={NotificationCategory.EMERGENCY}>Emergency</option>
+                  <option value={NotificationCategory.STAFF}>Staff</option>
+                  <option value={NotificationCategory.SYSTEM}>System</option>
+                </select>
+                <select
+                  value={compose.priority}
+                  onChange={(e) => setCompose({ ...compose, priority: e.target.value as NotificationPriority })}
+                  className="flex-1 bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white"
+                >
+                  <option value={NotificationPriority.LOW}>Low</option>
+                  <option value={NotificationPriority.MEDIUM}>Medium</option>
+                  <option value={NotificationPriority.HIGH}>High</option>
+                  <option value={NotificationPriority.URGENT}>Urgent</option>
+                  <option value={NotificationPriority.CRITICAL}>Critical</option>
+                </select>
+              </div>
+              <div className="flex justify-end space-x-2 pt-2">
+                <button onClick={() => setComposeOpen(false)} className="px-4 py-2 bg-gray-700 text-white rounded-lg">Cancel</button>
+                <button onClick={sendNotification} className="px-4 py-2 bg-emerald-600 text-white rounded-lg">Send</button>
+              </div>
+            </div>
           </div>
         </div>
       )}

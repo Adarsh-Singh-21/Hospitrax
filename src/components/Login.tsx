@@ -35,7 +35,7 @@ const Login: React.FC<LoginProps> = ({ onSelectRole }) => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-semibold">Doctor</h2>
+                <h2 className="text-xl font-semibold">Admin</h2>
                 <p className="text-gray-400 mt-1 text-sm">Manage resources and monitor operations</p>
               </div>
               <span className="text-emerald-400 group-hover:text-emerald-300">→</span>

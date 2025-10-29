@@ -1,55 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Filter, Clock, CheckCircle, AlertCircle, XCircle } from 'lucide-react';
+import ResourceService, { ResourceItem } from '../services/ResourceService';
 
 const ResourceTable: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const [resources, setResources] = useState<ResourceItem[]>([]);
+  const resourceService = ResourceService.getInstance();
 
-  const resources = [
-    {
-      id: 1,
-      hospital: 'City General Hospital',
-      resource: 'ICU Beds',
-      status: 'Available',
-      progress: 75,
-      total: '8/12',
-      createdDate: '02-09-2025',
-      dueDate: '2h left',
-      priority: 'high'
-    },
-    {
-      id: 2,
-      hospital: 'Metro Medical Center',
-      resource: 'Oxygen Tanks',
-      status: 'In Progress',
-      progress: 45,
-      total: '45/100',
-      createdDate: '02-09-2025',
-      dueDate: '4h left',
-      priority: 'medium'
-    },
-    {
-      id: 3,
-      hospital: 'Regional Hospital',
-      resource: 'Ventilators',
-      status: 'Urgent',
-      progress: 90,
-      total: '2/5',
-      createdDate: '02-09-2025',
-      dueDate: '1h left',
-      priority: 'urgent'
-    },
-    {
-      id: 4,
-      hospital: 'Community Health',
-      resource: 'Staff Nurses',
-      status: 'Available',
-      progress: 60,
-      total: '12/20',
-      createdDate: '02-09-2025',
-      dueDate: '6h left',
-      priority: 'low'
-    }
-  ];
+  useEffect(() => {
+    const unsubscribe = resourceService.subscribe((items) => setResources(items));
+    setResources(resourceService.getResources());
+    return unsubscribe;
+  }, [resourceService]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -120,7 +82,9 @@ const ResourceTable: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {resources.map((resource) => (
+            {resources
+              .filter(r => !searchTerm || r.hospital.toLowerCase().includes(searchTerm.toLowerCase()) || r.resource.toLowerCase().includes(searchTerm.toLowerCase()))
+              .map((resource) => (
               <tr key={resource.id} className="border-b border-gray-800 hover:bg-dark-hover transition-colors">
                 <td className="py-4 px-4">
                   <div className="flex items-center space-x-3">

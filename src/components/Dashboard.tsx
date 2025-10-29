@@ -8,6 +8,7 @@ import ResourceTable from './ResourceTable';
 import ResourceRequestModal from './ResourceRequestModal';
 import EmergencyAlert from './EmergencyAlert';
 import NotificationCenter from './NotificationCenter';
+import DoctorAdminPanel from './DoctorAdminPanel';
 import NotificationBanner from './NotificationBanner';
 import ReportsDashboard from './ReportsDashboard';
 import PatientAnalytics from './PatientAnalytics';
@@ -74,7 +75,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
 
   return (
     <div className="flex h-screen bg-dark-bg text-white">
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} role={role} />
       
       <div className="w-px bg-gray-700"></div>
       
@@ -83,7 +84,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
         
         <main className="flex-1 overflow-y-auto">
           {activeTab === 'notifications' ? (
-            <NotificationCenter />
+            <NotificationCenter canSend={role === 'doctor'} />
           ) : activeTab === 'reports' ? (
             <ReportsDashboard />
           ) : activeTab === 'analytics' ? (
@@ -105,7 +106,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
                 <AppointmentBooking />
               ) : (
                 <div className="bg-dark-card rounded-lg p-6 border border-gray-700 text-gray-300">
-                  Doctors can view appointments in Reports for now.
+                  Admins can view appointments in Reports for now.
                 </div>
               )}
             </div>
@@ -130,6 +131,9 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               </div>
 
               <div className="space-y-6">
+                {role === 'doctor' && (
+                  <DoctorAdminPanel />
+                )}
                 {/* Overview Cards */}
                 <OverviewCards />
                 
