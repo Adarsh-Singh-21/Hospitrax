@@ -15,6 +15,7 @@ import {
   Prescription, 
   VitalSigns 
 } from '../types/patient';
+import PatientDataService from '../services/PatientDataService';
 
 const ReportsDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'appointments' | 'reports' | 'prescriptions' | 'vitals'>('appointments');
@@ -24,154 +25,12 @@ const ReportsDashboard: React.FC = () => {
   const [prescriptions] = useState<Prescription[]>([]);
   const [vitalSigns] = useState<VitalSigns[]>([]);
 
-  // Mock data - in real app, this would come from API
+  // Load shared mock data from service
   useEffect(() => {
-    const mockPatient: Patient = {
-      id: 'patient-123',
-      name: 'John Doe',
-      dateOfBirth: new Date('1985-06-15'),
-      gender: 'male',
-      phone: '+1 (555) 123-4567',
-      email: 'john.doe@email.com',
-      address: '123 Main St, City, State 12345',
-      emergencyContact: {
-        name: 'Jane Doe',
-        phone: '+1 (555) 987-6543',
-        relationship: 'Spouse'
-      },
-      medicalHistory: ['Hypertension', 'Diabetes Type 2'],
-      allergies: ['Penicillin', 'Shellfish'],
-      bloodType: 'O+',
-      insuranceInfo: {
-        provider: 'HealthPlus Insurance',
-        policyNumber: 'HP123456789',
-        groupNumber: 'GRP001'
-      },
-      createdAt: new Date('2020-01-15'),
-      updatedAt: new Date()
-    };
-
-    const mockAppointments: Appointment[] = [
-      {
-        id: 'apt-1',
-        patientId: 'patient-123',
-        doctorId: 'doc-1',
-        doctorName: 'Dr. Sarah Johnson',
-        department: 'Cardiology',
-        appointmentType: 'consultation',
-        status: 'completed',
-        scheduledDate: new Date('2024-01-15'),
-        actualDate: new Date('2024-01-15'),
-        duration: 45,
-        reason: 'Chest pain and shortness of breath',
-        symptoms: ['Chest pain', 'Shortness of breath', 'Fatigue'],
-        diagnosis: 'Hypertension with mild chest discomfort',
-        treatment: 'Prescribed medication and lifestyle changes',
-        notes: 'Patient responded well to treatment',
-        followUpRequired: true,
-        followUpDate: new Date('2024-02-15'),
-        createdAt: new Date('2024-01-10'),
-        updatedAt: new Date('2024-01-15')
-      },
-      {
-        id: 'apt-2',
-        patientId: 'patient-123',
-        doctorId: 'doc-2',
-        doctorName: 'Dr. Michael Chen',
-        department: 'Endocrinology',
-        appointmentType: 'follow-up',
-        status: 'completed',
-        scheduledDate: new Date('2024-01-20'),
-        actualDate: new Date('2024-01-20'),
-        duration: 30,
-        reason: 'Diabetes management follow-up',
-        symptoms: ['Increased thirst', 'Frequent urination'],
-        diagnosis: 'Diabetes Type 2 - well controlled',
-        treatment: 'Continue current medication regimen',
-        notes: 'Blood sugar levels are stable',
-        followUpRequired: true,
-        followUpDate: new Date('2024-04-20'),
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-20')
-      },
-      {
-        id: 'apt-3',
-        patientId: 'patient-123',
-        doctorId: 'doc-3',
-        doctorName: 'Dr. Emily Rodriguez',
-        department: 'General Medicine',
-        appointmentType: 'checkup',
-        status: 'scheduled',
-        scheduledDate: new Date('2024-02-10'),
-        duration: 60,
-        reason: 'Annual physical examination',
-        symptoms: [],
-        followUpRequired: false,
-        createdAt: new Date('2024-01-25'),
-        updatedAt: new Date('2024-01-25')
-      }
-    ];
-
-    const mockReports: MedicalReport[] = [
-      {
-        id: 'report-1',
-        patientId: 'patient-123',
-        appointmentId: 'apt-1',
-        reportType: 'lab',
-        title: 'Complete Blood Count (CBC)',
-        description: 'Routine blood test to check overall health',
-        doctorName: 'Dr. Sarah Johnson',
-        department: 'Cardiology',
-        reportDate: new Date('2024-01-15'),
-        status: 'completed',
-        findings: 'All values within normal range. Slight elevation in white blood cell count.',
-        recommendations: 'Continue current treatment. Monitor for any signs of infection.',
-        attachments: [
-          {
-            id: 'att-1',
-            fileName: 'CBC_Results_2024.pdf',
-            fileType: 'pdf',
-            fileSize: 245760,
-            downloadUrl: '/reports/cbc-results.pdf',
-            uploadedAt: new Date('2024-01-15')
-          }
-        ],
-        isConfidential: false,
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-15')
-      },
-      {
-        id: 'report-2',
-        patientId: 'patient-123',
-        appointmentId: 'apt-1',
-        reportType: 'imaging',
-        title: 'Chest X-Ray',
-        description: 'X-ray examination of the chest to check heart and lungs',
-        doctorName: 'Dr. Sarah Johnson',
-        department: 'Radiology',
-        reportDate: new Date('2024-01-15'),
-        status: 'completed',
-        findings: 'Normal heart size and shape. Clear lung fields. No acute abnormalities.',
-        recommendations: 'No immediate follow-up required. Continue current treatment.',
-        attachments: [
-          {
-            id: 'att-2',
-            fileName: 'Chest_XRay_2024.jpg',
-            fileType: 'jpg',
-            fileSize: 1024000,
-            downloadUrl: '/reports/chest-xray.jpg',
-            uploadedAt: new Date('2024-01-15')
-          }
-        ],
-        isConfidential: false,
-        createdAt: new Date('2024-01-15'),
-        updatedAt: new Date('2024-01-15')
-      }
-    ];
-
-    setPatient(mockPatient);
-    setAppointments(mockAppointments);
-    setReports(mockReports);
+    const svc = PatientDataService.getInstance();
+    setPatient(svc.getPatient());
+    setAppointments(svc.getAppointments());
+    setReports(svc.getReports());
   }, []);
 
   const handleViewAppointmentDetails = (appointment: Appointment) => {

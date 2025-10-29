@@ -10,11 +10,17 @@ import EmergencyAlert from './EmergencyAlert';
 import NotificationCenter from './NotificationCenter';
 import NotificationBanner from './NotificationBanner';
 import ReportsDashboard from './ReportsDashboard';
+import PatientAnalytics from './PatientAnalytics';
+import HumanBodyAnalytics from './HumanBodyAnalytics';
 import { Plus, AlertTriangle } from 'lucide-react';
 import { Notification, NotificationPriority } from '../types/notifications';
 import NotificationService from '../services/NotificationService';
 
-const Dashboard: React.FC = () => {
+interface DashboardProps {
+  role?: 'patient' | 'doctor';
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [isRequestModalOpen, setIsRequestModalOpen] = useState(false);
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
@@ -79,6 +85,19 @@ const Dashboard: React.FC = () => {
             <NotificationCenter />
           ) : activeTab === 'reports' ? (
             <ReportsDashboard />
+          ) : activeTab === 'analytics' ? (
+            role === 'patient' ? (
+              <div className="space-y-6">
+                <HumanBodyAnalytics />
+                <PatientAnalytics />
+              </div>
+            ) : (
+              <div className="p-6">
+                <div className="bg-dark-card rounded-lg p-6 border border-gray-700 text-gray-300">
+                  Analytics will be available here.
+                </div>
+              </div>
+            )
           ) : (
             <div className="p-6">
               {/* Action Buttons */}
