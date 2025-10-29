@@ -11,7 +11,7 @@ import {
   Download,
   Search
 } from 'lucide-react';
-import { Appointment, AppointmentFilter } from '../types/patient';
+import { Appointment } from '../types/patient';
 
 interface AppointmentHistoryProps {
   appointments: Appointment[];
@@ -24,7 +24,6 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
   onViewDetails, 
   onDownloadReport 
 }) => {
-  const [, setFilter] = useState<AppointmentFilter>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [selectedType, setSelectedType] = useState<string>('all');

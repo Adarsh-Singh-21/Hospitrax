@@ -20,11 +20,12 @@ const NotificationBanner: React.FC<NotificationBannerProps> = ({
     // Auto-dismiss after 10 seconds for non-critical notifications
     if (notification.priority !== NotificationPriority.CRITICAL) {
       const timer = setTimeout(() => {
-        handleDismiss();
+        // direct dismiss to avoid depending on handleDismiss in deps
+        onDismiss(notification.id);
       }, 10000);
       return () => clearTimeout(timer);
     }
-  }, [notification.id]);
+  }, [notification.id, notification.priority, onDismiss]);
 
   const handleDismiss = () => {
     setIsAnimating(true);

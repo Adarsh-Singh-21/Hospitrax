@@ -8,13 +8,7 @@ const ResourceChart: React.FC = () => {
     { name: 'In Use', value: 19.2, color: '#374151' },
   ];
 
-  const renderCustomizedLabel = () => {
-    return (
-      <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" className="text-white text-lg font-semibold">
-        80.8% Available
-      </text>
-    );
-  };
+  // Removed unused custom label to satisfy linter
 
   return (
     <div className="bg-dark-card rounded-lg p-6">

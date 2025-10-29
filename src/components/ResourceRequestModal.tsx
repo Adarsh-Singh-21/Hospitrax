@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, AlertTriangle, Bed, Activity, Wind, Users } from 'lucide-react';
+import { X, Bed, Activity, Wind, Users } from 'lucide-react';
 
 interface ResourceRequestModalProps {
   isOpen: boolean;

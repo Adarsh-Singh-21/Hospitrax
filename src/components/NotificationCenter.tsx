@@ -19,14 +19,12 @@ import {
   NotificationType, 
   NotificationPriority, 
   NotificationCategory, 
-  NotificationFilter,
   DeliveryChannel
 } from '../types/notifications';
 // import NotificationSettings from './NotificationSettings';
 
 const NotificationCenter: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [, setFilter] = useState<NotificationFilter>({});
   const [showSettings, setShowSettings] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<NotificationCategory | 'all'>('all');

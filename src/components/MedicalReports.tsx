@@ -13,7 +13,7 @@ import {
   Microscope,
   Heart
 } from 'lucide-react';
-import { MedicalReport, ReportFilter } from '../types/patient';
+import { MedicalReport } from '../types/patient';
 
 interface MedicalReportsProps {
   reports: MedicalReport[];
@@ -26,7 +26,6 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
   onViewReport, 
   onDownloadReport 
 }) => {
-  const [, setFilter] = useState<ReportFilter>({});
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');

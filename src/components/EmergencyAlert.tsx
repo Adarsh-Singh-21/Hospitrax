@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { AlertTriangle, X, Phone, MapPin, Clock } from 'lucide-react';
+import { AlertTriangle, X, Phone, MapPin } from 'lucide-react';
 
 interface EmergencyAlertProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (alert: EmergencyAlert) => void;
+  onSubmit: (alert: EmergencyAlertData) => void;
 }
 
-interface EmergencyAlert {
+interface EmergencyAlertData {
   type: 'medical' | 'equipment' | 'staff' | 'other';
   severity: 'low' | 'medium' | 'high' | 'critical';
   description: string;
@@ -16,7 +16,7 @@ interface EmergencyAlert {
 }
 
 const EmergencyAlert: React.FC<EmergencyAlertProps> = ({ isOpen, onClose, onSubmit }) => {
-  const [formData, setFormData] = useState<EmergencyAlert>({
+  const [formData, setFormData] = useState<EmergencyAlertData>({
     type: 'medical',
     severity: 'medium',
     description: '',
