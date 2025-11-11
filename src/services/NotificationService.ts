@@ -11,6 +11,7 @@ export class NotificationService {
   private static instance: NotificationService;
   private settings: NotificationSettings;
   private listeners: ((notifications: Notification[]) => void)[] = [];
+  private notifications: Notification[] = [];
 
   private constructor() {
     this.settings = this.getDefaultSettings();
@@ -87,6 +88,10 @@ export class NotificationService {
     if (this.shouldSendNotification(newNotification)) {
       await this.sendNotification(newNotification);
     }
+
+    // Store and broadcast to listeners
+    this.notifications = [newNotification, ...this.notifications];
+    this.notifyListeners(this.notifications);
 
     return newNotification;
   }
@@ -213,6 +218,22 @@ export class NotificationService {
   // Generate unique ID
   private generateId(): string {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  }
+
+  // Expose current notifications
+  public getNotifications(): Notification[] {
+    return this.notifications;
+  }
+
+  // Mark as read helpers
+  public markAsRead(id: string): void {
+    this.notifications = this.notifications.map(n => n.id === id ? { ...n, isRead: true } : n);
+    this.notifyListeners(this.notifications);
+  }
+
+  public markAllAsRead(): void {
+    this.notifications = this.notifications.map(n => ({ ...n, isRead: true }));
+    this.notifyListeners(this.notifications);
   }
 
   // Update notification settings
