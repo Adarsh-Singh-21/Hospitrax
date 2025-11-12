@@ -126,7 +126,7 @@ const ReportsDashboard: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center space-x-2 px-4 py-3 rounded-lg transition-colors ${
                 activeTab === tab.id
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-gray-600 text-white'
                   : 'text-gray-400 hover:text-white hover:bg-gray-700'
               }`}
             >
@@ -135,7 +135,7 @@ const ReportsDashboard: React.FC = () => {
               {tab.count > 0 && (
                 <span className={`px-2 py-1 rounded-full text-xs ${
                   activeTab === tab.id
-                    ? 'bg-blue-500 text-white'
+                    ? 'bg-gray-500 text-white'
                     : 'bg-gray-600 text-gray-300'
                 }`}>
                   {tab.count}

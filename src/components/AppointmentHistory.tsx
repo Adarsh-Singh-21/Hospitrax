@@ -52,7 +52,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
       case 'no-show':
         return <AlertCircle size={16} className="text-orange-400" />;
       case 'scheduled':
-        return <Clock size={16} className="text-blue-400" />;
+        return <Clock size={16} className="text-gray-400" />;
       default:
         return <Clock size={16} className="text-gray-400" />;
     }
@@ -67,7 +67,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
       case 'no-show':
         return 'bg-orange-100 text-orange-800 border-orange-200';
       case 'scheduled':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -76,7 +76,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
   const getAppointmentTypeColor = (type: string) => {
     switch (type) {
       case 'consultation':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'follow-up':
         return 'bg-green-50 text-green-700 border-green-200';
       case 'emergency':
@@ -95,7 +95,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <Calendar size={24} className="text-blue-400" />
+          <Calendar size={24} className="text-gray-400" />
           <h2 className="text-xl font-bold text-white">Appointment History</h2>
         </div>
         <div className="text-sm text-gray-400">
@@ -113,7 +113,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
               placeholder="Search by doctor, department, or reason..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
           </div>
         </div>
@@ -122,7 +122,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
             <option value="all">All Status</option>
             <option value="completed">Completed</option>
@@ -134,7 +134,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
             <option value="all">All Types</option>
             <option value="consultation">Consultation</option>
@@ -236,7 +236,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
                         {appointment.symptoms.map((symptom, index) => (
                           <span
                             key={index}
-                            className="px-2 py-1 bg-blue-900 text-blue-200 rounded-full text-xs"
+                            className="px-2 py-1 bg-gray-900 text-gray-200 rounded-full text-xs"
                           >
                             {symptom}
                           </span>
@@ -262,7 +262,7 @@ const AppointmentHistory: React.FC<AppointmentHistoryProps> = ({
                 <div className="flex flex-col space-y-2 ml-4">
                   <button
                     onClick={() => onViewDetails(appointment)}
-                    className="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
                   >
                     <FileText size={16} />
                     <span>View Details</span>

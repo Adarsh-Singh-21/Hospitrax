@@ -68,7 +68,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({ isOpen, onC
               type="text"
               value={formData.hospital}
               onChange={(e) => setFormData({ ...formData, hospital: e.target.value })}
-              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gray-500"
               required
             />
           </div>
@@ -87,7 +87,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({ isOpen, onC
                     onClick={() => setFormData({ ...formData, resourceType: type.id })}
                     className={`p-3 rounded-lg border transition-colors ${
                       formData.resourceType === type.id
-                        ? 'border-blue-500 bg-blue-900 bg-opacity-20'
+                        ? 'border-gray-500 bg-gray-900 bg-opacity-20'
                         : 'border-gray-600 hover:border-gray-500'
                     }`}
                   >
@@ -108,7 +108,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({ isOpen, onC
               min="1"
               value={formData.quantity}
               onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) })}
-              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gray-500"
               required
             />
           </div>
@@ -120,7 +120,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({ isOpen, onC
             <select
               value={formData.priority}
               onChange={(e) => setFormData({ ...formData, priority: e.target.value as any })}
-              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gray-500"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -136,7 +136,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({ isOpen, onC
             <textarea
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500 h-20 resize-none"
+              className="w-full bg-dark-hover border border-gray-600 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-gray-500 h-20 resize-none"
               placeholder="Describe the specific need..."
             />
           </div>
@@ -151,7 +151,7 @@ const ResourceRequestModal: React.FC<ResourceRequestModalProps> = ({ isOpen, onC
             </button>
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex-1 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
               Submit Request
             </button>

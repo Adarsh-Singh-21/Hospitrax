@@ -17,7 +17,7 @@ const PerformanceChart: React.FC = () => {
     <div className="bg-dark-card rounded-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
-          <TrendingUp size={20} className="text-blue-400" />
+          <TrendingUp size={20} className="text-gray-400" />
           <h3 className="text-white text-lg font-semibold">Resource Utilization</h3>
         </div>
         <div className="flex items-center space-x-2 text-green-400 text-sm">
@@ -58,7 +58,7 @@ const PerformanceChart: React.FC = () => {
             />
             <Bar 
               dataKey="value" 
-              fill="#3B82F6"
+              fill="#6B7280"
               radius={[4, 4, 0, 0]}
             />
           </BarChart>

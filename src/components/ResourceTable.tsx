@@ -45,7 +45,7 @@ const ResourceTable: React.FC = () => {
     <div className="bg-dark-card rounded-lg p-6">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-gray-500 rounded-lg flex items-center justify-center">
             <span className="text-white text-sm font-bold">R</span>
           </div>
           <h3 className="text-white text-lg font-semibold">Resource Requests</h3>
@@ -58,7 +58,7 @@ const ResourceTable: React.FC = () => {
               placeholder="Search..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-dark-hover text-white pl-10 pr-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-blue-500"
+              className="bg-dark-hover text-white pl-10 pr-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:border-gray-500"
             />
           </div>
           <button className="flex items-center space-x-2 px-4 py-2 bg-dark-hover rounded-lg border border-gray-600 hover:bg-gray-700 transition-colors">
@@ -110,7 +110,7 @@ const ResourceTable: React.FC = () => {
                   <div className="flex items-center space-x-2">
                     <div className="w-20 bg-gray-700 rounded-full h-2">
                       <div 
-                        className="bg-blue-500 h-2 rounded-full" 
+                        className="bg-gray-500 h-2 rounded-full" 
                         style={{ width: `${resource.progress}%` }}
                       ></div>
                     </div>
