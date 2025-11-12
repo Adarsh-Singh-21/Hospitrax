@@ -61,7 +61,7 @@ const ResourceChart: React.FC = () => {
             <div className="w-3 h-3 bg-gray-500 rounded-full"></div>
             <span className="text-gray-400 text-sm">In Use</span>
           </div>
-          <span className="text-white font-semibold">$11.3k</span>
+          <span className="text-white font-semibold">₹11.3k</span>
         </div>
       </div>
     </div>
