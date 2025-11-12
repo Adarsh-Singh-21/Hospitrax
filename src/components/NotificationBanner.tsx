@@ -69,11 +69,11 @@ const NotificationBanner: React.FC<NotificationBannerProps> = ({
         };
       case NotificationPriority.MEDIUM:
         return {
-          bg: 'bg-blue-900',
-          border: 'border-blue-500',
+          bg: 'bg-gray-900',
+          border: 'border-gray-500',
           icon: Info,
-          iconColor: 'text-blue-400',
-          text: 'text-blue-100'
+          iconColor: 'text-gray-400',
+          text: 'text-gray-100'
         };
       case NotificationPriority.LOW:
         return {

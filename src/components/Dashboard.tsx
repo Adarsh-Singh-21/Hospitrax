@@ -74,10 +74,10 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   };
 
   return (
-    <div className="flex h-screen bg-dark-bg text-white">
+    <div className="flex h-screen bg-dark-bg dark:bg-dark-bg bg-gray-50 text-white dark:text-white text-gray-900">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} role={role} />
       
-      <div className="w-px bg-gray-700"></div>
+      <div className="w-px bg-gray-700 dark:bg-gray-700 bg-gray-200"></div>
       
       <div className="flex-1 flex flex-col">
         <Header currentSection={activeTab} role={role} />
@@ -116,7 +116,7 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
               <div className="flex justify-end space-x-4 mb-6">
                 <button
                   onClick={() => setIsRequestModalOpen(true)}
-                  className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  className="flex items-center space-x-2 px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
                 >
                   <Plus size={20} />
                   <span>Request Resource</span>

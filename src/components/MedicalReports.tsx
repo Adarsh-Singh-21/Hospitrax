@@ -48,7 +48,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
   const getReportTypeIcon = (type: string) => {
     switch (type) {
       case 'lab':
-        return <Microscope size={20} className="text-blue-400" />;
+        return <Microscope size={20} className="text-gray-400" />;
       case 'imaging':
         return <Image size={20} className="text-green-400" />;
       case 'pathology':
@@ -65,7 +65,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
   const getReportTypeColor = (type: string) => {
     switch (type) {
       case 'lab':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-gray-50 text-gray-700 border-gray-200';
       case 'imaging':
         return 'bg-green-50 text-green-700 border-green-200';
       case 'pathology':
@@ -86,7 +86,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
       case 'pending':
         return <Clock size={16} className="text-yellow-400" />;
       case 'reviewed':
-        return <Eye size={16} className="text-blue-400" />;
+        return <Eye size={16} className="text-gray-400" />;
       default:
         return <Clock size={16} className="text-gray-400" />;
     }
@@ -99,7 +99,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
       case 'pending':
         return 'bg-yellow-100 text-yellow-800 border-yellow-200';
       case 'reviewed':
-        return 'bg-blue-100 text-blue-800 border-blue-200';
+        return 'bg-gray-100 text-gray-800 border-gray-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -136,7 +136,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
               placeholder="Search by title, doctor, or department..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
           </div>
         </div>
@@ -145,7 +145,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
-            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
             <option value="all">All Types</option>
             <option value="lab">Lab Results</option>
@@ -159,7 +159,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
           <select
             value={selectedStatus}
             onChange={(e) => setSelectedStatus(e.target.value)}
-            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
           >
             <option value="all">All Status</option>
             <option value="completed">Completed</option>
@@ -288,7 +288,7 @@ const MedicalReports: React.FC<MedicalReportsProps> = ({
                 <div className="flex flex-col space-y-2 ml-4">
                   <button
                     onClick={() => onViewReport(report)}
-                    className="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
                   >
                     <Eye size={16} />
                     <span>View Report</span>

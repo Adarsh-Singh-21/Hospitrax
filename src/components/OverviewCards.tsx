@@ -8,7 +8,7 @@ const OverviewCards: React.FC = () => {
       value: '45',
       change: '+12 vs last week',
       icon: Bed,
-      color: 'text-blue-400'
+      color: 'text-gray-400'
     },
     {
       title: 'ICU Capacity',
@@ -38,14 +38,14 @@ const OverviewCards: React.FC = () => {
       {cards.map((card, index) => {
         const Icon = card.icon;
         return (
-          <div key={index} className="bg-dark-card rounded-lg p-6">
+          <div key={index} className="bg-dark-card dark:bg-dark-card bg-white rounded-lg p-6 border border-gray-700 dark:border-gray-700 border-gray-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-gray-400 text-sm mb-1">{card.title}</p>
-                <p className="text-white text-2xl font-bold mb-1">{card.value}</p>
-                <p className="text-green-400 text-sm">{card.change}</p>
+                <p className="text-gray-400 dark:text-gray-400 text-gray-600 text-sm mb-1">{card.title}</p>
+                <p className="text-white dark:text-white text-gray-900 text-2xl font-bold mb-1">{card.value}</p>
+                <p className="text-green-400 dark:text-green-400 text-green-600 text-sm">{card.change}</p>
               </div>
-              <div className={`p-3 rounded-lg bg-dark-hover ${card.color}`}>
+              <div className={`p-3 rounded-lg bg-dark-hover dark:bg-dark-hover bg-gray-100 ${card.color}`}>
                 <Icon size={24} />
               </div>
             </div>

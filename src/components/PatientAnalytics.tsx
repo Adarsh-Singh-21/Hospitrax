@@ -38,7 +38,7 @@ const PatientAnalytics: React.FC = () => {
       <div className="bg-dark-card rounded-lg p-6 border border-gray-700">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <TrendingUp size={20} className="text-blue-400" />
+            <TrendingUp size={20} className="text-gray-400" />
             <h2 className="text-lg font-semibold text-white">Patient Analytics</h2>
           </div>
           <div className="flex items-center space-x-6 text-sm">
@@ -106,7 +106,7 @@ const PatientAnalytics: React.FC = () => {
       {/* Bottom row: Vitals trend */}
       <div className="bg-dark-card rounded-lg p-6 border border-gray-700">
         <div className="flex items-center space-x-2 mb-4">
-          <TrendingUp size={18} className="text-blue-400" />
+          <TrendingUp size={18} className="text-gray-400" />
           <h3 className="text-white font-medium">Vitals Trend</h3>
         </div>
         <div className="h-72">

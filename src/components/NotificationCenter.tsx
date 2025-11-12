@@ -96,7 +96,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
       case NotificationCategory.EMERGENCY:
         return <AlertTriangle size={16} className="text-red-400" />;
       case NotificationCategory.RESOURCES:
-        return <Activity size={16} className="text-blue-400" />;
+        return <Activity size={16} className="text-gray-400" />;
       case NotificationCategory.APPOINTMENTS:
         return <Clock size={16} className="text-green-400" />;
       case NotificationCategory.STAFF:
@@ -121,7 +121,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
       case NotificationPriority.HIGH:
         return 'border-l-yellow-500';
       case NotificationPriority.MEDIUM:
-        return 'border-l-blue-500';
+        return 'border-l-gray-500';
       case NotificationPriority.LOW:
         return 'border-l-gray-500';
       default:
@@ -140,7 +140,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
         </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Bell size={24} className="text-blue-400" />
+            <Bell size={24} className="text-gray-400" />
             <h1 className="text-2xl font-bold">Notifications</h1>
             {unreadCount > 0 && (
               <span className="bg-red-500 text-white text-xs px-2 py-1 rounded-full">
@@ -151,7 +151,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
           <div className="flex items-center space-x-3">
             <button
               onClick={markAllAsRead}
-              className="flex items-center space-x-2 px-3 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="flex items-center space-x-2 px-3 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
               <CheckCheck size={16} />
               <span>Mark All Read</span>
@@ -182,7 +182,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
               placeholder="Search notifications..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
           </div>
 
@@ -190,7 +190,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value as NotificationCategory | 'all')}
-              className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
               <option value="all">All Categories</option>
               <option value={NotificationCategory.EMERGENCY}>Emergency</option>
@@ -205,7 +205,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
             <select
               value={selectedPriority}
               onChange={(e) => setSelectedPriority(e.target.value as NotificationPriority | 'all')}
-              className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             >
               <option value="all">All Priorities</option>
               <option value={NotificationPriority.CRITICAL}>Critical</option>
@@ -232,7 +232,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
               <div
                 key={notification.id}
                 className={`bg-dark-card rounded-lg border-l-4 ${getPriorityColor(notification.priority)} ${
-                  !notification.isRead ? 'ring-2 ring-blue-500/20' : ''
+                  !notification.isRead ? 'ring-2 ring-gray-500/20' : ''
                 }`}
               >
                 <div className="p-4">
@@ -245,7 +245,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
                         <div className="flex items-center space-x-2 mb-1">
                           <h3 className="text-white font-semibold">{notification.title}</h3>
                           {!notification.isRead && (
-                            <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                            <div className="w-2 h-2 bg-gray-500 rounded-full"></div>
                           )}
                         </div>
                         <p className="text-gray-300 text-sm mb-2">{notification.message}</p>
@@ -283,7 +283,7 @@ const NotificationCenter: React.FC<NotificationCenterProps> = ({ canSend }) => {
             <p className="text-gray-400 mb-4">Settings panel coming soon...</p>
             <button
               onClick={() => setShowSettings(false)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
             >
               Close
             </button>
