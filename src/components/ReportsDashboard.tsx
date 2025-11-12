@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import AppointmentHistory from './AppointmentHistory';
 import MedicalReports from './MedicalReports';
+import DetailsModal from './DetailsModal';
 import { 
   Patient, 
   Appointment, 
@@ -16,6 +17,7 @@ import {
   VitalSigns 
 } from '../types/patient';
 import PatientDataService from '../services/PatientDataService';
+import { downloadAppointmentReport, downloadMedicalReport } from '../utils/downloadUtils';
 
 const ReportsDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'appointments' | 'reports' | 'prescriptions' | 'vitals'>('appointments');
@@ -24,6 +26,9 @@ const ReportsDashboard: React.FC = () => {
   const [reports, setReports] = useState<MedicalReport[]>([]);
   const [prescriptions] = useState<Prescription[]>([]);
   const [vitalSigns] = useState<VitalSigns[]>([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'appointment' | 'report'>('appointment');
+  const [modalData, setModalData] = useState<Appointment | MedicalReport | null>(null);
 
   // Load shared mock data from service
   useEffect(() => {
@@ -34,23 +39,37 @@ const ReportsDashboard: React.FC = () => {
   }, []);
 
   const handleViewAppointmentDetails = (appointment: Appointment) => {
-    console.log('Viewing appointment details:', appointment);
-    // In real app, this would open a modal or navigate to details page
+    setModalType('appointment');
+    setModalData(appointment);
+    setModalOpen(true);
   };
 
   const handleDownloadAppointmentReport = (appointmentId: string) => {
-    console.log('Downloading appointment report:', appointmentId);
-    // In real app, this would trigger download
+    const appointment = appointments.find(apt => apt.id === appointmentId);
+    if (appointment) {
+      downloadAppointmentReport(appointment, patient?.name);
+    }
   };
 
   const handleViewReport = (report: MedicalReport) => {
-    console.log('Viewing report:', report);
-    // In real app, this would open a modal or navigate to report viewer
+    setModalType('report');
+    setModalData(report);
+    setModalOpen(true);
   };
 
   const handleDownloadReport = (reportId: string) => {
-    console.log('Downloading report:', reportId);
-    // In real app, this would trigger download
+    const report = reports.find(r => r.id === reportId);
+    if (report) {
+      downloadMedicalReport(report, patient?.name);
+    }
+  };
+
+  const handleModalDownload = (id: string) => {
+    if (modalType === 'appointment') {
+      handleDownloadAppointmentReport(id);
+    } else {
+      handleDownloadReport(id);
+    }
   };
 
   const getTabIcon = (tab: string) => {
@@ -180,6 +199,18 @@ const ReportsDashboard: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Details Modal */}
+      <DetailsModal
+        isOpen={modalOpen}
+        onClose={() => {
+          setModalOpen(false);
+          setModalData(null);
+        }}
+        type={modalType}
+        data={modalData}
+        onDownload={handleModalDownload}
+      />
     </div>
   );
 };

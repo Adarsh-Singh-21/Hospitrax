@@ -33,15 +33,15 @@ const DoctorAdminPanel: React.FC = () => {
       quantity: resourceForm.quantity,
       note: resourceForm.note,
     });
-    // Inform via notification (resource update)
+    // Inform via notification (resource update) - visible to all users
     await notificationService.createNotification({
       type: NotificationType.RESOURCE_AVAILABILITY,
-      title: 'Resource Update',
-      message: `${resourceForm.hospital}: +${resourceForm.quantity} ${resourceForm.resourceType}`,
+      title: '📦 Resource Update',
+      message: `${resourceForm.hospital}: Added ${resourceForm.quantity} ${resourceForm.resourceType}${resourceForm.note ? ` - ${resourceForm.note}` : ''}`,
       isRead: false,
       priority: NotificationPriority.MEDIUM,
       category: NotificationCategory.RESOURCES,
-      deliveryChannels: [DeliveryChannel.IN_APP],
+      deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH],
       metadata: { ...resourceForm }
     });
     setResourceForm({ hospital: '', resourceType: 'beds', quantity: 1, note: '' });
@@ -142,7 +142,7 @@ const DoctorAdminPanel: React.FC = () => {
             <Send size={16} className="inline mr-2" /> Oxygen Low
           </button>
         </div>
-        <p className="text-xs text-gray-400 mt-3">Sends in-app alerts to relevant users.</p>
+        <p className="text-xs text-gray-400 mt-3">Sends alerts to all users (patients and staff).</p>
       </div>
     </div>
   );

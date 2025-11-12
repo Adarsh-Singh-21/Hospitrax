@@ -30,17 +30,61 @@ const Dashboard: React.FC<DashboardProps> = ({ role }) => {
   const [activeBanners, setActiveBanners] = useState<Notification[]>([]);
   const notificationService = NotificationService.getInstance();
 
-  const handleResourceRequest = (request: any) => {
+  const handleResourceRequest = async (request: any) => {
     console.log('Resource request submitted:', request);
+    
+    // Create notification for admin/doctors about the resource request
+    await notificationService.createResourceRequest({
+      hospital: request.hospital,
+      resourceType: request.resourceType,
+      quantity: request.quantity,
+      priority: request.priority,
+      description: request.description || '',
+    });
+    
     // Here you would typically send the request to your backend
   };
 
-  const handleEmergencyAlert = (alert: any) => {
+  const handleEmergencyAlert = async (alert: any) => {
     console.log('Emergency alert sent:', alert);
-    // Create emergency notification
-    notificationService.createEmergencyAlert(
-      alert.message || 'Emergency situation reported',
-      alert.location
+    
+    // Build detailed message with all alert information
+    const severityLabels: Record<string, string> = {
+      low: 'Low',
+      medium: 'Medium',
+      high: 'High',
+      critical: 'Critical'
+    };
+    
+    const typeLabels: Record<string, string> = {
+      medical: 'Medical Emergency',
+      equipment: 'Equipment Failure',
+      staff: 'Staff Shortage',
+      other: 'Other Emergency'
+    };
+    
+    const severityLabel = severityLabels[alert.severity] || alert.severity;
+    const typeLabel = typeLabels[alert.type] || alert.type;
+    
+    // Create detailed message
+    let message = `${typeLabel} - ${severityLabel} Priority\n\n`;
+    if (alert.description) {
+      message += `Description: ${alert.description}\n`;
+    }
+    if (alert.location) {
+      message += `Location: ${alert.location}\n`;
+    }
+    if (alert.contact) {
+      message += `Contact: ${alert.contact}\n`;
+    }
+    
+    // Create emergency notification with all details
+    await notificationService.createEmergencyAlert(
+      message.trim(),
+      alert.location,
+      alert.severity,
+      alert.type,
+      alert.contact
     );
   };
 
