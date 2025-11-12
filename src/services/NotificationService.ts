@@ -15,6 +15,8 @@ export class NotificationService {
 
   private constructor() {
     this.settings = this.getDefaultSettings();
+    this.loadSettings();
+    this.loadNotifications();
   }
 
   public static getInstance(): NotificationService {
@@ -34,21 +36,21 @@ export class NotificationService {
         [DeliveryChannel.SMS]: false,
       },
       categories: {
-        appointments: true,
-        resources: true,
-        emergency: true,
-        staff: true,
-        ai_insights: true,
-        patient_communication: true,
-        administrative: false,
-        system: true,
+        [NotificationCategory.APPOINTMENTS]: true,
+        [NotificationCategory.RESOURCES]: true,
+        [NotificationCategory.EMERGENCY]: true,
+        [NotificationCategory.STAFF]: true,
+        [NotificationCategory.AI_INSIGHTS]: true,
+        [NotificationCategory.PATIENT_COMMUNICATION]: true,
+        [NotificationCategory.ADMINISTRATIVE]: false,
+        [NotificationCategory.SYSTEM]: true,
       },
       priorities: {
-        critical: true,
-        urgent: true,
-        high: true,
-        medium: true,
-        low: false,
+        [NotificationPriority.CRITICAL]: true,
+        [NotificationPriority.URGENT]: true,
+        [NotificationPriority.HIGH]: true,
+        [NotificationPriority.MEDIUM]: true,
+        [NotificationPriority.LOW]: false,
       },
       quietHours: {
         enabled: true,
@@ -89,9 +91,14 @@ export class NotificationService {
       await this.sendNotification(newNotification);
     }
 
-    // Store and broadcast to listeners
-    this.notifications = [newNotification, ...this.notifications];
-    this.notifyListeners(this.notifications);
+    // Store in in-app list if IN_APP is among delivery channels (always store for visibility)
+    if (newNotification.deliveryChannels.includes(DeliveryChannel.IN_APP)) {
+      this.notifications = [newNotification, ...this.notifications];
+      // Save to localStorage
+      this.saveNotifications();
+      // Broadcast to all subscribers (patients and doctors)
+      this.notifyListeners(this.notifications);
+    }
 
     return newNotification;
   }
@@ -220,19 +227,23 @@ export class NotificationService {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   }
 
-  // Expose current notifications
+  // Public notifications API used by UI
   public getNotifications(): Notification[] {
     return this.notifications;
   }
 
   // Mark as read helpers
   public markAsRead(id: string): void {
-    this.notifications = this.notifications.map(n => n.id === id ? { ...n, isRead: true } : n);
+    this.notifications = this.notifications.map(n => (
+      n.id === id ? { ...n, isRead: true } : n
+    ));
+    this.saveNotifications();
     this.notifyListeners(this.notifications);
   }
 
   public markAllAsRead(): void {
     this.notifications = this.notifications.map(n => ({ ...n, isRead: true }));
+    this.saveNotifications();
     this.notifyListeners(this.notifications);
   }
 
@@ -260,17 +271,107 @@ export class NotificationService {
     }
   }
 
+  // Save notifications to localStorage
+  private saveNotifications(): void {
+    try {
+      const serialized = this.notifications.map(notif => ({
+        ...notif,
+        timestamp: notif.timestamp.toISOString(),
+        expiresAt: notif.expiresAt ? notif.expiresAt.toISOString() : undefined,
+      }));
+      localStorage.setItem('notifications', JSON.stringify(serialized));
+    } catch (error) {
+      console.error('Failed to save notifications:', error);
+    }
+  }
+
+  // Load notifications from localStorage
+  private loadNotifications(): void {
+    try {
+      const stored = localStorage.getItem('notifications');
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        const now = new Date();
+        this.notifications = parsed
+          .map((notif: any) => ({
+            ...notif,
+            timestamp: new Date(notif.timestamp),
+            expiresAt: notif.expiresAt ? new Date(notif.expiresAt) : undefined,
+          }))
+          .filter((notif: Notification) => {
+            // Remove expired notifications
+            if (notif.expiresAt && notif.expiresAt < now) {
+              return false;
+            }
+            // Keep notifications from last 30 days
+            const daysSince = (now.getTime() - notif.timestamp.getTime()) / (1000 * 60 * 60 * 24);
+            return daysSince <= 30;
+          });
+        
+        // Save cleaned notifications back
+        if (this.notifications.length !== parsed.length) {
+          this.saveNotifications();
+        }
+        
+        // Notify listeners with loaded notifications
+        this.notifyListeners(this.notifications);
+      }
+    } catch (error) {
+      console.error('Failed to load notifications:', error);
+    }
+  }
+
+  // Clear old notifications (optional utility method)
+  public clearOldNotifications(daysToKeep: number = 30): void {
+    const now = new Date();
+    const cutoffTime = now.getTime() - (daysToKeep * 24 * 60 * 60 * 1000);
+    
+    this.notifications = this.notifications.filter(notif => {
+      // Keep if not expired and within cutoff time
+      if (notif.expiresAt && notif.expiresAt < now) {
+        return false;
+      }
+      return notif.timestamp.getTime() >= cutoffTime;
+    });
+    
+    this.saveNotifications();
+    this.notifyListeners(this.notifications);
+  }
+
   // Create specific notification types
-  public async createEmergencyAlert(message: string, location?: string): Promise<Notification> {
+  public async createEmergencyAlert(message: string, location?: string, severity?: string, type?: string, contact?: string): Promise<Notification> {
+    // Determine priority based on severity if provided
+    let priority = NotificationPriority.CRITICAL;
+    if (severity) {
+      switch (severity.toLowerCase()) {
+        case 'low':
+          priority = NotificationPriority.LOW;
+          break;
+        case 'medium':
+          priority = NotificationPriority.MEDIUM;
+          break;
+        case 'high':
+          priority = NotificationPriority.HIGH;
+          break;
+        case 'urgent':
+          priority = NotificationPriority.URGENT;
+          break;
+        case 'critical':
+        default:
+          priority = NotificationPriority.CRITICAL;
+          break;
+      }
+    }
+    
     return this.createNotification({
       type: NotificationType.EMERGENCY_CODE_BLUE,
-      title: 'Emergency Alert',
+      title: '🚨 Emergency Alert',
       message,
       isRead: false,
-      priority: NotificationPriority.CRITICAL,
+      priority,
       category: NotificationCategory.EMERGENCY,
       deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH, DeliveryChannel.SMS],
-      metadata: { location },
+      metadata: { location, severity, type, contact },
     });
   }
 
@@ -283,6 +384,61 @@ export class NotificationService {
       priority: NotificationPriority.HIGH,
       category: NotificationCategory.RESOURCES,
       deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH],
+    });
+  }
+
+  public async createResourceRequest(request: {
+    hospital: string;
+    resourceType: string;
+    quantity: number;
+    priority: string;
+    description: string;
+  }): Promise<Notification> {
+    // Map priority to notification priority
+    let notificationPriority = NotificationPriority.MEDIUM;
+    switch (request.priority.toLowerCase()) {
+      case 'low':
+        notificationPriority = NotificationPriority.LOW;
+        break;
+      case 'medium':
+        notificationPriority = NotificationPriority.MEDIUM;
+        break;
+      case 'high':
+        notificationPriority = NotificationPriority.HIGH;
+        break;
+      case 'urgent':
+        notificationPriority = NotificationPriority.URGENT;
+        break;
+    }
+
+    // Format resource type label
+    const resourceLabels: Record<string, string> = {
+      beds: 'Hospital Beds',
+      icu: 'ICU Beds',
+      oxygen: 'Oxygen Tanks',
+      staff: 'Medical Staff',
+    };
+    const resourceLabel = resourceLabels[request.resourceType] || request.resourceType;
+
+    // Build detailed message
+    let message = `New resource request from patient:\n\n`;
+    message += `Hospital: ${request.hospital}\n`;
+    message += `Resource: ${resourceLabel}\n`;
+    message += `Quantity: ${request.quantity}\n`;
+    message += `Priority: ${request.priority.toUpperCase()}\n`;
+    if (request.description) {
+      message += `Description: ${request.description}`;
+    }
+
+    return this.createNotification({
+      type: NotificationType.RESOURCE_SHORTAGE,
+      title: '📋 New Resource Request',
+      message: message.trim(),
+      isRead: false,
+      priority: notificationPriority,
+      category: NotificationCategory.RESOURCES,
+      deliveryChannels: [DeliveryChannel.IN_APP, DeliveryChannel.PUSH],
+      metadata: { ...request, resourceLabel, isRequest: true },
     });
   }
 
